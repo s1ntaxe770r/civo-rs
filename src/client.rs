@@ -18,7 +18,7 @@ pub struct SimpleResponse {
     pub details: String,
 }
 
-fn new_civo_client(apikey: String, region: String) -> CivoClient {
+pub fn new_civo_client(apikey: String, region: String) -> CivoClient {
     let http_c = Client::new();
     let u = Url::parse("https://api.civo.com/v2").unwrap();
     let c = CivoClient {
