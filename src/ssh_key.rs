@@ -14,9 +14,15 @@ pub struct ssh_key {
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ssh_key_request {
-    name: String,
-    key: String,
+    pub name: String,
+    pub public_key: String,
 }
+#[derive(Serialize, Deserialize, Debug)]
+pub struct SshKeyResponse { 
+    pub id: String,
+    pub result: String
+}
+
 type SshKeys = Vec<ssh_key>;
 
 impl CivoClient {
@@ -43,10 +49,11 @@ impl CivoClient {
         Ok(keys.unwrap())
     }
 
-    pub async fn new_ssh_key(&self, key: ssh_key_request) -> Result<SimpleResponse, HTTPError> {
+    pub async fn new_ssh_key(&self, key: ssh_key_request) -> Result<SshKeyResponse, HTTPError>  {
         let ssh_endpoint = self.prepare_client_url("/v2/sshkeys");
         let jsn_bdy = serde_json::to_string(&key).unwrap();
-        let req = self
+        dbg!(&jsn_bdy);
+        let  req = self
             .http_client
             .post(ssh_endpoint)
             .bearer_auth(&self.api_key)
@@ -57,13 +64,13 @@ impl CivoClient {
             .send()
             .await
             .unwrap();
-        if req.status().as_u16() <= 300 {
+        if &req.status().as_u16() <= &300 {
             return Err(HTTPError::new(
-                req.status().as_u16(),
+                req.status().as_u16().clone(),
                 req.text().await.unwrap().as_str(),
             ));
         }
-        let resp = req.json::<SimpleResponse>().await;
+        let resp =  req.json::<SshKeyResponse>().await;
         Ok(resp.unwrap())
     }
 }
