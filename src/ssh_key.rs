@@ -52,7 +52,6 @@ impl CivoClient {
     pub async fn new_ssh_key(&self, key: ssh_key_request) -> Result<SshKeyResponse, HTTPError>  {
         let ssh_endpoint = self.prepare_client_url("/v2/sshkeys");
         let jsn_bdy = serde_json::to_string(&key).unwrap();
-        dbg!(&jsn_bdy);
         let  req = self
             .http_client
             .post(ssh_endpoint)
