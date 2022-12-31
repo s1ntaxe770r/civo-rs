@@ -1,5 +1,5 @@
+use crate::network::Subnet;
 use serde::{Deserialize, Serialize};
-use crate::{network::Subnet};
 #[derive(Deserialize, Serialize)]
 pub struct Instance {
     #[serde(default)]
@@ -76,4 +76,20 @@ pub struct Instance {
     pub reserved_ip_id: String,
     #[serde(default)]
     subnets: Vec<Subnet>,
+}
+
+pub struct InstanceConfig {
+    pub count: i32,
+    pub hostname: String,
+    pub reverse_dns: String,
+    pub size: String,
+    pub region: String,
+    pub public_ip: String,
+    pub network_id: String,
+    pub template_id: String,
+    pub source_type: String,
+}
+
+pub struct InstanceConsole {
+    pub url: String,
 }

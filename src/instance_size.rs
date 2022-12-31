@@ -2,7 +2,7 @@ use crate::client::CivoClient;
 use crate::errors::HTTPError;
 use reqwest::header::USER_AGENT;
 use serde::{Deserialize, Serialize};
-#[derive(Serialize, Deserialize,Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct InstanceSize {
     #[serde(default)]
     pub id: String,
@@ -36,7 +36,7 @@ impl CivoClient {
                 req.text().await.unwrap().as_str(),
             ));
         }
-        let resp =  req.json::<Vec<InstanceSize>>().await;
+        let resp = req.json::<Vec<InstanceSize>>().await;
         Ok(resp.unwrap())
     }
 }

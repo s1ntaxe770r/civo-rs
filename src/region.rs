@@ -29,7 +29,7 @@ impl CivoClient {
         new.clone()
     }
 
-  fn add_region_query(&self) -> Vec<(&str, String)> {
+    fn add_region_query(&self) -> Vec<(&str, String)> {
         let query = vec![("region", self.region.to_string())];
         query
     }
