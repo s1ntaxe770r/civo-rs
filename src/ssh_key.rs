@@ -38,7 +38,7 @@ impl CivoClient {
             .send()
             .await
             .unwrap();
-        if !req.status().as_u16() <= 300 {
+        if !req.status().as_u16() >= 300 {
             return Err(HTTPError::new(
                 req.status().as_u16(),
                 req.text().await.unwrap().as_str(),
