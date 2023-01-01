@@ -2,6 +2,7 @@ use std::fmt::Error;
 
 use crate::network::Subnet;
 use crate::client::CivoClient;
+use crate::errors::GenericError;
 use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Serialize)]
 pub struct Instance {
@@ -115,8 +116,12 @@ pub struct PaginatedInstanceList {
 }
 
 impl CivoClient {
-    pub fn newInstanceConfig() -> Result<InstanceConfig,Error> {
+    pub async fn newInstanceConfig(&self) -> Result<InstanceConfig,GenericError> {
+        let default_network =  match self.get_default_network().await {
+            Ok(network) => network,
+            Err(error) => return Err(GenericError::new(&error.to_string())),
+        };
         
-        Ok(())
+        Ok(todo!())
     }
 }
