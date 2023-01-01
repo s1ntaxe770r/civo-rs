@@ -7,6 +7,30 @@ pub struct HTTPError {
     pub message: String,
 }
 
+#[derive(Debug)]
+pub struct GenericError {
+   pub  message: String
+}
+
+impl fmt::Display for GenericError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "error {}", self.message)
+    }
+}
+
+
+impl GenericError {
+    pub fn new(message: &str) -> GenericError {
+        GenericError {
+            message: message.to_string()
+        }
+    }
+}
+
+
+impl Error for GenericError{}
+
+
 impl HTTPError {
     pub fn new(code: u16, message: &str) -> HTTPError {
         HTTPError {
