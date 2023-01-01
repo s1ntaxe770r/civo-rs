@@ -1,4 +1,7 @@
+use std::fmt::Error;
+
 use crate::network::Subnet;
+use crate::client::CivoClient;
 use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Serialize)]
 pub struct Instance {
@@ -77,7 +80,7 @@ pub struct Instance {
     #[serde(default)]
     subnets: Vec<Subnet>,
 }
-
+#[derive(Deserialize, Serialize)]
 pub struct InstanceConfig {
     pub count: i32,
     pub hostname: String,
@@ -88,8 +91,32 @@ pub struct InstanceConfig {
     pub network_id: String,
     pub template_id: String,
     pub source_type: String,
+    pub snapshot_id: String,
+    #[serde(default)]
+    pub subnets: Vec<String>,
+    pub initial_user: String,
+    pub ssh_key_id: String,
+    pub scrip: String,
+    #[serde(default)]
+    pub tags: Vec<String>,
+    pub tag_list: Vec<String>,
+    pub firewall_id: String,
 }
-
+#[derive(Deserialize, Serialize)]
 pub struct InstanceConsole {
     pub url: String,
+}
+
+pub struct PaginatedInstanceList {
+    pub page: i32,
+    pub per_page: i32,
+    pub pages: i32,
+    pub items: Vec<Instance>,
+}
+
+impl CivoClient {
+    pub fn newInstanceConfig() -> Result<InstanceConfig,Error> {
+        
+        Ok(())
+    }
 }
