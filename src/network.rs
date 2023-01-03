@@ -60,7 +60,6 @@ impl  CivoClient {
             }
     
         let networks = &req.json::<Vec<Network>>().await.unwrap();
-        
         match networks.iter().find(|n| n.default) {
             Some(default_network) => Ok(default_network.clone()),
             None => Err(GenericError { message: "Unable to find default network".to_string() }),
