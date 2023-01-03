@@ -1,4 +1,4 @@
-use reqwest::Client;
+use reqwest::{Client,Response,Error};
 use serde::{Deserialize, Serialize};
 use url::Url;
 #[derive(Debug)]
@@ -28,4 +28,23 @@ pub fn new_civo_client(apikey: String, region: String) -> CivoClient {
         region: region,
     };
     c
+}
+
+
+impl CivoClient {
+    pub async fn send_get_request(&self,endpoint:&str) -> Result<Response,Error> {
+        let req = self
+        .http_client
+        .get(endpoint)
+        .bearer_auth(&self.api_key)
+        .header("Accept", "Application/json")
+        .header("Content-Type", "application/json")
+        .query(&[("region", &self.region)])
+        .send()
+        .await;
+        match req {
+            Ok(response) => return Ok(response),
+            Err(error) => return Err(error),
+        }
+    }
 }
