@@ -7,19 +7,19 @@ use serde::{Deserialize, Serialize};
 #[derive(Deserialize, Serialize, Clone)]
 pub struct DiskImage {
     #[serde(default)]
-    id: String,
+    pub id: String,
     #[serde(default)]
-    name: String,
+    pub name: String,
     #[serde(default)]
-    version: String,
+    pub version: String,
     #[serde(default)]
-    state: String,
+    pub state: String,
     #[serde(default)]
-    distribution: String,
+    pub distribution: String,
     #[serde(default)]
-    description: String,
+    pub description: String,
     #[serde(default)]
-    label: String,
+    pub label: String,
 }
 
 impl CivoClient {
