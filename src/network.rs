@@ -1,7 +1,7 @@
 use crate::{client::CivoClient, errors::GenericError};
 use reqwest::Error;
 use serde::{Deserialize,Serialize};
-#[derive(Deserialize,Serialize,Clone)]
+#[derive(Deserialize,Serialize,Clone,Debug)]
 pub struct Network{
     #[serde(default)]
     pub id: String,
@@ -28,7 +28,7 @@ pub struct Network{
 }
 
 
-#[derive(Deserialize,Serialize)]
+#[derive(Deserialize,Serialize,Debug)]
 pub struct Subnet {
     pub id: String,
     #[serde(default)]
