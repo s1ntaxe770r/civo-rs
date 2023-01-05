@@ -1,10 +1,10 @@
-use std::fmt::Error;
-
-use crate::network::Subnet;
 use crate::client::CivoClient;
 use crate::errors::GenericError;
+use crate::errors::HTTPError;
+use reqwest::Error;
+use crate::{disk_image, network::Subnet};
 use serde::{Deserialize, Serialize};
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize,Debug)]
 pub struct Instance {
     #[serde(default)]
     pub id: String,
@@ -81,10 +81,11 @@ pub struct Instance {
     #[serde(default)]
     subnets: Vec<Subnet>,
 }
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize,Debug)]
 pub struct InstanceConfig {
     pub count: i32,
     pub hostname: String,
+    #[serde(default)]
     pub reverse_dns: String,
     pub size: String,
     pub region: String,
@@ -96,8 +97,9 @@ pub struct InstanceConfig {
     #[serde(default)]
     pub subnets: Vec<String>,
     pub initial_user: String,
-    pub ssh_key_id: String,
-    pub scrip: String,
+    #[serde(default)]
+    pub ssh_key_id: Option<String>,
+    pub script: String,
     #[serde(default)]
     pub tags: Vec<String>,
     pub tag_list: Vec<String>,
@@ -116,12 +118,50 @@ pub struct PaginatedInstanceList {
 }
 
 impl CivoClient {
-    pub async fn newInstanceConfig(&self) -> Result<InstanceConfig,GenericError> {
-        let default_network =  match self.get_default_network().await {
+    pub async fn new_instance_config(&self) -> Result<InstanceConfig, GenericError> {
+        let default_network = match self.get_default_network().await {
             Ok(network) => network,
             Err(error) => return Err(GenericError::new(&error.to_string())),
         };
+
+        let disk_img = match self.get_disk_by_name("ubuntu-focal").await {
+            Ok(img) => img,
+            Err(error) => return Err(GenericError::new(&error.to_string())),
+        };
+
+        let instance_config = InstanceConfig {
+            count: 1,
+            hostname: "".to_string(),
+            reverse_dns: "".to_string(),
+            size: "g3.medium".to_string(),
+            region: self.region.to_string(),
+            public_ip: "true".to_string(),
+            network_id: default_network.id,
+            template_id: disk_img.id,
+            source_type: "".to_string(),
+            snapshot_id: "".to_string(),
+            initial_user: "civo".to_string(),
+            script: "".to_string(),
+            tags: vec!["".to_string()],
+            tag_list: vec!["".to_string()],
+            firewall_id: "".to_string(),
+            subnets: vec!["".to_string()] ,
+            ssh_key_id: None,
+        };
         
-        Ok(todo!())
+
+        Ok(instance_config)
     }
+    
+    pub async fn create_instance(&self,config:InstanceConfig) -> Result<Instance,HTTPError> {
+        let instance_endpoint = self.prepare_client_url("/v2/instances");
+        let resp = self.send_post_request(instance_endpoint, &config).await;
+        match resp {
+            Ok(instance) => Ok(instance.json::<Instance>().await.unwrap()),
+            Err(err) => Err(err)
+        }
+
+    }
+
+
 }

@@ -1,6 +1,10 @@
-use reqwest::{Client,Response,Error};
+use std::f32::consts::E;
+
+use reqwest::{Client, Error, Response};
 use serde::{Deserialize, Serialize};
 use url::Url;
+
+use crate::errors::HTTPError;
 #[derive(Debug)]
 pub struct CivoClient {
     pub api_key: String,
@@ -30,21 +34,47 @@ pub fn new_civo_client(apikey: String, region: String) -> CivoClient {
     c
 }
 
-
 impl CivoClient {
-    pub async fn send_get_request(&self,endpoint:&str) -> Result<Response,Error> {
+    pub async fn send_get_request(&self, endpoint: &str) -> Result<Response, Error> {
         let req = self
-        .http_client
-        .get(endpoint)
-        .bearer_auth(&self.api_key)
-        .header("Accept", "Application/json")
-        .header("Content-Type", "application/json")
-        .query(&[("region", &self.region)])
-        .send()
-        .await;
+            .http_client
+            .get(endpoint)
+            .bearer_auth(&self.api_key)
+            .header("Accept", "Application/json")
+            .header("Content-Type", "application/json")
+            .query(&[("region", &self.region)])
+            .send()
+            .await;
         match req {
             Ok(response) => return Ok(response),
             Err(error) => return Err(error),
+        }
+    }
+    pub async fn send_post_request<T>(&self, endpoint: Url, data: T) -> Result<Response, HTTPError>
+    where
+        T: Serialize,
+    {
+        let res = self
+            .http_client
+            .post(endpoint)
+            .bearer_auth(&self.api_key)
+            .header("Accept", "Application/json")
+            .header("Content-Type", "application/json")
+            .query(&[("region", &self.region)])
+            .json(&data)
+            .send()
+            .await;
+        match res {
+            Ok(resp) => {
+                if !resp.status().is_success() {
+                    let err = HTTPError::new(resp.status().as_u16(), &resp.text().await.unwrap().to_string());
+                    return Err(err);
+                } else {
+                    return Ok(resp)  
+                }
+
+            },
+            Err(err) => Err(HTTPError::new(0,&err.to_string()))
         }
     }
 }
