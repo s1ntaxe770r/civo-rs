@@ -1,10 +1,10 @@
 use crate::client::CivoClient;
 use crate::errors::GenericError;
 use crate::errors::HTTPError;
-use reqwest::Error;
 use crate::{disk_image, network::Subnet};
+use reqwest::Error;
 use serde::{Deserialize, Serialize};
-#[derive(Deserialize, Serialize,Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Instance {
     #[serde(default)]
     pub id: String,
@@ -81,7 +81,7 @@ pub struct Instance {
     #[serde(default)]
     subnets: Vec<Subnet>,
 }
-#[derive(Deserialize, Serialize,Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct InstanceConfig {
     pub count: i32,
     pub hostname: String,
@@ -101,8 +101,9 @@ pub struct InstanceConfig {
     pub ssh_key_id: Option<String>,
     pub script: String,
     #[serde(default)]
-    pub tags: Vec<String>,
-    pub tag_list: Vec<String>,
+    pub tags: String,
+    #[serde(default)]
+    pub tag_list: String,
     pub firewall_id: String,
 }
 #[derive(Deserialize, Serialize)]
@@ -142,26 +143,22 @@ impl CivoClient {
             snapshot_id: "".to_string(),
             initial_user: "civo".to_string(),
             script: "".to_string(),
-            tags: vec!["".to_string()],
-            tag_list: vec!["".to_string()],
+            tags: "".to_string(),
+            tag_list: "".to_string(),
             firewall_id: "".to_string(),
-            subnets: vec!["".to_string()] ,
+            subnets: vec!["".to_string()],
             ssh_key_id: None,
         };
-        
 
         Ok(instance_config)
     }
-    
-    pub async fn create_instance(&self,config:InstanceConfig) -> Result<Instance,HTTPError> {
+
+    pub async fn create_instance(&self, config: InstanceConfig) -> Result<Instance, HTTPError> {
         let instance_endpoint = self.prepare_client_url("/v2/instances");
         let resp = self.send_post_request(instance_endpoint, &config).await;
         match resp {
             Ok(instance) => Ok(instance.json::<Instance>().await.unwrap()),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
-
     }
-
-
 }
