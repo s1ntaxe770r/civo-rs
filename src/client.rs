@@ -17,8 +17,11 @@ pub struct CivoClient {
 pub struct SimpleResponse {
     pub id: String,
     pub result: String,
+    #[serde(default)]
     pub code: String,
+    #[serde(default)]
     pub reason: String,
+    #[serde(default)]
     pub details: String,
 }
 
@@ -67,14 +70,42 @@ impl CivoClient {
         match res {
             Ok(resp) => {
                 if !resp.status().is_success() {
-                    let err = HTTPError::new(resp.status().as_u16(), &resp.text().await.unwrap().to_string());
+                    let err = HTTPError::new(
+                        resp.status().as_u16(),
+                        &resp.text().await.unwrap().to_string(),
+                    );
                     return Err(err);
                 } else {
-                    return Ok(resp)  
+                    return Ok(resp);
                 }
+            }
+            Err(err) => Err(HTTPError::new(0, &err.to_string())),
+        }
+    }
 
-            },
-            Err(err) => Err(HTTPError::new(0,&err.to_string()))
+    pub async fn send_delete_request(&self, endpoint: &str) -> Result<Response, HTTPError> {
+        let res = self
+            .http_client
+            .delete(endpoint)
+            .bearer_auth(&self.api_key)
+            .header("Accept", "Application/json")
+            .header("Content-Type", "application/json")
+            .query(&[("region", &self.region)])
+            .send()
+            .await;
+        match res {
+            Ok(resp) => {
+                if !resp.status().is_success() {
+                    let err = HTTPError::new(
+                        resp.status().as_u16(),
+                        &resp.text().await.unwrap().to_string(),
+                    );
+                    return Err(err);
+                } else {
+                    return Ok(resp);
+                }
+            }
+            Err(err) => Err(HTTPError::new(0, &err.to_string())),
         }
     }
 }
