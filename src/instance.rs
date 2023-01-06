@@ -1,9 +1,10 @@
 use crate::client::CivoClient;
+use crate::client::SimpleResponse;
 use crate::errors::GenericError;
 use crate::errors::HTTPError;
-use crate::{disk_image, network::Subnet};
-use reqwest::Error;
+use crate::network::Subnet;
 use serde::{Deserialize, Serialize};
+use reqwest::Response;
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Instance {
     #[serde(default)]
@@ -144,7 +145,7 @@ impl CivoClient {
             initial_user: "civo".to_string(),
             script: "".to_string(),
             tags: "".to_string(),
-            tag_list: "".to_string(),
+            tag_list: "".to_string()    ,
             firewall_id: "".to_string(),
             subnets: vec!["".to_string()],
             ssh_key_id: None,
@@ -161,4 +162,17 @@ impl CivoClient {
             Err(err) => Err(err),
         }
     }
+
+    pub async fn delete_instance(&self,instance_id:&str) -> Result<SimpleResponse,HTTPError> {
+        let instance_endpoint = self.prepare_client_url("/v2/instances/").join(&instance_id);
+        let resp = self.send_delete_request(instance_endpoint.unwrap().as_str()).await;
+        match resp {
+            Ok(simplresp) => Ok(simplresp.json::<SimpleResponse>().await.unwrap()),
+            Err(err) => Err(err),
+        }
+      
+    }
+        
+
+
 }
