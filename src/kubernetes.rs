@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::client::CivoClient;
 use crate::client::SimpleResponse;
 use crate::errors::GenericError;
@@ -47,12 +49,29 @@ pub struct  KubernetesPool   {
     pub instances: Vec<KubernetesInstance>
 }
 
+type ApplcationConfiguration:HashMap<String,String>;
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct KubernetesInstalledApplication {
+    pub application: String, 
+    pub name: String , 
+    pub version: String, 
+    pub dependencies: String, 
+    pub maintainer: String, 
+    pub description: String, 
+    pub post_install: String, 
+    pub installed: String, 
+    pub url: String,
+    pub category: String, 
+    pub update_at: String, 
+    pub image_url: String, 
+    pub plan: String, 
+    pub configuration: HashMap<String,ApplcationConfiguration> 
+}
 
 
 
 
 impl  CivoClient {
     
-
 }

@@ -173,6 +173,4 @@ impl CivoClient {
       
     }
         
-
-
 }
