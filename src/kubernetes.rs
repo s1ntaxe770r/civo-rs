@@ -50,7 +50,7 @@ pub struct  KubernetesPool   {
     pub instances: Vec<KubernetesInstance>
 }
 
-type ApplcationConfiguration:HashMap<String,String>;
+type ApplcationConfiguration = HashMap<String,String>;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct KubernetesInstalledApplication {
@@ -119,7 +119,7 @@ pub struct PaginatedKubernetesClusters  {
 pub struct KubernetesClusterConfig { 
     pub name: String ,
     pub region: String,
-    pub num_target_nodes: int, 
+    pub num_target_nodes: i32, 
     pub target_node_size: String ,
     pub kubnernetes_version: String, 
     pub node_destroy: String, 
