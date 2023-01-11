@@ -139,8 +139,13 @@ pub struct KubernetesPoolConfig {
     count: i32,
     size: String
 } 
-
-
+#[derive(Deserialize,Serialize)]
+pub struct  KubernetesVersion {
+    pub version:String ,
+   // #[serde(rename(serialize = "type", deserialize = "type"))]
+   pub r#type: String,
+   pub default: bool,
+}
 impl  CivoClient {
     
 }
