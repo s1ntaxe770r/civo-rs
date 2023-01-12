@@ -1,10 +1,8 @@
 use std::collections::HashMap;
 
 use crate::client::CivoClient;
-use crate::client::SimpleResponse;
 use crate::errors::GenericError;
-use crate::errors::HTTPError;
-use reqwest::Version;
+use reqwest::Error;
 use serde::{Deserialize, Serialize};
 
 
@@ -146,6 +144,31 @@ pub struct  KubernetesVersion {
    pub r#type: String,
    pub default: bool,
 }
+
+
 impl  CivoClient {
-    
+    pub  async fn list_kubernetes_clusters(&self) -> Result<PaginatedKubernetesClusters,Error> {
+        let cluster_endpoint = self.prepare_client_url("/v2/kubernetes/clusters");
+        let resp = self.send_get_request(&cluster_endpoint.as_str()).await;
+        match resp {
+            Ok(clusters) => return Ok(clusters.json::<PaginatedKubernetesClusters>().await?),
+            Err(error) => return Err(error),
+        }
+    }
+
+    pub async fn get_kubernetes_cluster(&self, id: &str) -> Result<KubernetesCluster, Error> {
+        let cluster_plus_id = format!("/v2/kubernetes/cluster/{}", id);
+        let disk_endpoint = self.prepare_client_url(&cluster_plus_id);
+        let resp = self.send_get_request(disk_endpoint.as_str()).await;
+        match resp {
+            Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await?),
+            Err(error) => return Err(error),
+        }
+    }
+
+    pub async fn new_kubernetes_cluster(&self, mut kc: KubernetesClusterConfig) ->  Result<KubernetesCluster,GenericError> {
+        kc.region = self.region.clone();
+        Ok(todo!())
+    }
+
 }
