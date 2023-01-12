@@ -4,6 +4,7 @@ use crate::client::CivoClient;
 use crate::errors::GenericError;
 use reqwest::Error;
 use serde::{Deserialize, Serialize};
+use crate::errors::HTTPError; 
 
 
 
@@ -158,17 +159,24 @@ impl  CivoClient {
 
     pub async fn get_kubernetes_cluster(&self, id: &str) -> Result<KubernetesCluster, Error> {
         let cluster_plus_id = format!("/v2/kubernetes/cluster/{}", id);
-        let disk_endpoint = self.prepare_client_url(&cluster_plus_id);
-        let resp = self.send_get_request(disk_endpoint.as_str()).await;
+        let cluster_endopoint = self.prepare_client_url(&cluster_plus_id);
+        let resp = self.send_get_request(cluster_endopoint.as_str()).await;
         match resp {
             Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await?),
             Err(error) => return Err(error),
         }
     }
 
-    pub async fn new_kubernetes_cluster(&self, mut kc: KubernetesClusterConfig) ->  Result<KubernetesCluster,GenericError> {
+    pub async fn new_kubernetes_cluster(&self, mut kc: KubernetesClusterConfig) ->  Result<KubernetesCluster,HTTPError> {
         kc.region = self.region.clone();
-        Ok(todo!())
+        let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/cluster");
+        let resp = self.send_post_request(cluster_enpoint,kc).await;
+        match resp {
+            Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await.unwrap()),
+            Err(error) => return Err(error),
+
+        }
+      
     }
 
 }
