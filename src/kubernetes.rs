@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-
 use crate::client::CivoClient;
 use crate::errors::GenericError;
 use reqwest::Error;
@@ -175,8 +174,16 @@ impl  CivoClient {
             Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await.unwrap()),
             Err(error) => return Err(error),
 
-        }
-      
+        }      
     }
+
+    // pub fn new_cluster_config(&self) -> Result<&mut KubernetesClusterConfig,GenericError>{
+    //     // let mut cluster_cfg = KubernetesClusterConfig{
+    //     //     name
+    //     // }
+    //     // Ok(todo!())
+
+    // }
+
 
 }
