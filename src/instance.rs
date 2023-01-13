@@ -1,7 +1,7 @@
 use crate::client::CivoClient;
 use crate::client::SimpleResponse;
 use crate::errors::GenericError;
-use crate::errors::HTTPError;
+use crate::errors::HTTPError; 
 use crate::network::Subnet;
 use serde::{Deserialize, Serialize};
 use reqwest::Response;
