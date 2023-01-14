@@ -1,5 +1,3 @@
-use rand::SeedableRng;
-use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
