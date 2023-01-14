@@ -3,6 +3,7 @@ use crate::client::SimpleResponse;
 use crate::errors::GenericError;
 use crate::errors::HTTPError; 
 use crate::network::Subnet;
+use crate::utils;
 use serde::{Deserialize, Serialize};
 use reqwest::Response;
 #[derive(Deserialize, Serialize, Debug)]
@@ -133,7 +134,7 @@ impl CivoClient {
 
         let instance_config = InstanceConfig {
             count: 1,
-            hostname: "".to_string(),
+            hostname: utils::random_name(),
             reverse_dns: "".to_string(),
             size: "g3.medium".to_string(),
             region: self.region.to_string(),
