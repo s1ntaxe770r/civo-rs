@@ -9,7 +9,7 @@ Because Civo's go client wasn't fast enough 😅. This is purely for educational
 Right now there aren't many i would like to mimic as much civo's go client as possible, however i am focused on some of the core functionalities right now 
 
 - [x] managing ssh keys
-- [ ] creating compute instances 
+- [x] creating compute instances 
 - [ ] creating kubernetes clusters
 - [ ] managing object stores 
 
