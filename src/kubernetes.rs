@@ -137,11 +137,14 @@ pub struct KubernetesPoolConfig {
     count: i32,
     size: String
 } 
-#[derive(Deserialize,Serialize)]
+#[derive(Deserialize,Serialize,Debug)]
 pub struct  KubernetesVersion {
+    #[serde(default)]
     pub version:String ,
-   // #[serde(rename(serialize = "type", deserialize = "type"))]
+   #[serde(rename(serialize = "type", deserialize = "type"))]
+   #[serde(default)]
    pub r#type: String,
+   #[serde(default)]
    pub default: bool,
 }
 
@@ -185,5 +188,13 @@ impl  CivoClient {
 
     // }
 
+    pub async fn get_kubernetes_versions(&self) -> Result<Vec<KubernetesVersion>, Error> {
+        let versions_endopoint = self.prepare_client_url("/v2/kubernetes/versions");
+        let resp = self.send_get_request(versions_endopoint.as_str()).await;
+        match resp {
+            Ok(versions) => return Ok(versions.json::<Vec<KubernetesVersion>>().await?),
+            Err(error) => return Err(error),
+        }
+    }
 
 }
