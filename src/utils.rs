@@ -1,4 +1,7 @@
 use rand::SeedableRng;
+use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 pub fn random_name() -> String {
     let adjectives = vec![
@@ -35,7 +38,7 @@ pub fn random_name() -> String {
 	"garden", "brook", "earth", "oasis", "bastion", "ridge", "bayou", "citadel",
 	"shore", "cavern", "gorge", "spring", "arrow", "heap",
     ];
-	// let mut seed = SeedableRng::seed_from_u64(r);
-    
-todo!()
-}
+	let mut  seed = thread_rng();
+	let str =  format!("{}-{}",adjectives.choose(&mut seed).unwrap(),nouns.choose(&mut seed).unwrap()).to_string();
+	str
+} 
