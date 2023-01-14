@@ -1,6 +1,6 @@
 use crate::{
-    client::{self, CivoClient},
     errors,
+    client::CivoClient,
 };
 use reqwest::Error;
 use serde::{Deserialize, Serialize};

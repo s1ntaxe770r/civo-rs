@@ -3,7 +3,7 @@ use crate::errors::HTTPError;
 use reqwest::header::USER_AGENT;
 use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ssh_key {
+pub struct SshKey {
     pub id: String,
     pub name: String,
     pub fingerprint: String,
@@ -12,7 +12,7 @@ pub struct ssh_key {
     pub created_at: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ssh_key_request {
+pub struct SshKeyRequest {
     pub name: String,
     pub public_key: String,
 }
@@ -22,7 +22,7 @@ pub struct SshKeyResponse {
     pub result: String,
 }
 
-type SshKeys = Vec<ssh_key>;
+type SshKeys = Vec<SshKey>;
 
 impl CivoClient {
     pub async fn list_ssh_keys(&self) -> Result<SshKeys, HTTPError> {
@@ -48,7 +48,7 @@ impl CivoClient {
         Ok(keys.unwrap())
     }
 
-    pub async fn new_ssh_key(&self, key: ssh_key_request) -> Result<SshKeyResponse, HTTPError> {
+    pub async fn new_ssh_key(&self, key: SshKeyRequest) -> Result<SshKeyResponse, HTTPError> {
         let ssh_endpoint = self.prepare_client_url("/v2/sshkeys");
         let jsn_bdy = serde_json::to_string(&key).unwrap();
         let req = self
@@ -72,7 +72,7 @@ impl CivoClient {
         Ok(resp.unwrap())
     }
 
-    pub async fn update_ssh_key(&self, name: &str, ssh_key_id: &str) -> Result<ssh_key, HTTPError> {
+    pub async fn update_ssh_key(&self, name: &str, ssh_key_id: &str) -> Result<SshKey, HTTPError> {
         let ssh_endpoint = self.prepare_client_url("/v2/sshkeys");
         // /v2/sshkeys/key_id
         ssh_endpoint.join(ssh_key_id).unwrap();
@@ -94,7 +94,7 @@ impl CivoClient {
                 req.text().await.unwrap().as_str(),
             ));
         }
-        let resp = req.json::<ssh_key>().await;
+        let resp = req.json::<SshKey>().await;
         Ok(resp.unwrap())
         // dbg!(req.text().await.unwrap())
     }
