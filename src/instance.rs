@@ -139,7 +139,7 @@ impl CivoClient {
             size: "g3.medium".to_string(),
             region: self.region.to_string(),
             public_ip: "true".to_string(),
-            network_id: default_network.id,
+            network_id: default_network.ID,
             template_id: disk_img.id,
             source_type: "".to_string(),
             snapshot_id: "".to_string(),
