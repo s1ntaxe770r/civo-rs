@@ -8,3 +8,4 @@ pub mod ssh_key;
 pub mod disk_image;
 pub mod kubernetes;
 pub mod utils;
+pub mod objectstore;
