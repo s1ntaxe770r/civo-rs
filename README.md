@@ -2,7 +2,7 @@
 Unofficial rust client for the civo api
 
 ## Why ? 
-Because Civo's go client wasn't fast enough 😅. This is purely for educational purposes as i am trying to get better at rust ,this also means that a large part of this code is bad and more expreienced rust devs would be disgusted by it. See something that isn't right? Open a PR as i mentioned earlier i am doing this to improve and would appreciate any feedback and or help i can get. 
+Because Civo's go client wasn't fast enough( Joking obviously ) 😅. This is purely for educational purposes as i am trying to get better at rust ,this also means that a large part of this code is bad and more expreienced rust devs would be disgusted by it. See something that isn't right? Open a PR as i mentioned earlier i am doing this to improve and would appreciate any feedback and or help i can get. 
 
 > Fun fact: this originally started out as a client to interact with Civo objectstores.
 
@@ -15,7 +15,6 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 - [x] creating kubernetes clusters
 - [ ] managing object stores 
 - [ ] support for civo databases
-
 
 ## How do i use this thing
 
