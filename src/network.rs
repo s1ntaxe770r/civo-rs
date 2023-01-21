@@ -1,32 +1,34 @@
 use crate::{client::CivoClient, errors::GenericError};
 use serde::{Deserialize,Serialize};
-#[derive(Deserialize,Serialize,Clone,Debug)]
-pub struct Network{
+#[derive(Deserialize,Serialize,Debug,Clone)]
+pub struct Network {
+    #[serde(rename = "id")]
+
+    pub ID: String,
+    #[serde(rename = "name")]
+    pub Name: String,
+    #[serde(rename = "default")]
+    pub Default: bool,
+    #[serde(rename = "cidr")]
+    pub CIDR: String,
+    #[serde(rename = "cidr_v6")]
     #[serde(default)]
-    pub id: String,
+    pub CIDRV6: String,
+    #[serde(rename = "label")]
+    pub Label: String,
+    #[serde(rename = "status")]
+    pub Status: String,
+    #[serde(rename = "ipv4_enabled")]
+    pub IPv4Enabled: bool,
+    #[serde(rename = "ipv6_enabled")]
     #[serde(default)]
-    pub name: String,
+    pub IPv6Enabled: bool,
+    #[serde(rename = "nameservers_v4")]
+    pub NameserversV4: Vec<String>,
+    #[serde(rename = "nameservers_v6")]
     #[serde(default)]
-    pub default: bool,
-    #[serde(default)]
-    pub cidr: String,
-    #[serde(default)]
-    pub cidr_v6: String,
-    #[serde(default)]
-    pub label: String,
-    #[serde(default)]
-    pub status: String,
-    #[serde(default)]
-    pub ipv4_enabled:  bool,
-    #[serde(default)]
-    pub ipv6_enabled: bool,
-    #[serde(default)]
-    pub nameservers_v4: Vec<String>,
-    #[serde(default)]
-    pub nameservers_v6:  Vec<String>
+    pub NameserversV6: Vec<String>,
 }
-
-
 #[derive(Deserialize,Serialize,Debug)]
 pub struct Subnet {
     pub id: String,
@@ -59,7 +61,7 @@ impl  CivoClient {
             }
     
         let networks = &req.json::<Vec<Network>>().await.unwrap();
-        match networks.iter().find(|n| n.default) {
+        match networks.iter().find(|n| n.Default) {
             Some(default_network) => Ok(default_network.clone()),
             None => Err(GenericError { message: "Unable to find default network".to_string() }),
         }
