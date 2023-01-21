@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::client::CivoClient;
+use crate::client::{CivoClient, SimpleResponse};
 use crate::errors::GenericError;
 use reqwest::Error;
 use serde::{Deserialize, Serialize};
@@ -70,35 +70,90 @@ pub struct KubernetesInstalledApplication {
 
 
 #[derive(Deserialize,Serialize,Debug)]
-pub struct KubernetesCluster {
+pub struct K8scluster {
+ #[serde(default)] 
   pub id: String, 
-  pub name: String, 
-  pub generated_name: String,
-  pub version: String,
-  pub status: String, 
+  #[serde(default)] 
+  pub name: Option<String>, 
+  #[serde(default)] 
+  pub generated_name: Option<String>,
+  #[serde(default)] 
+  pub version: Option<String>,
+  #[serde(default)] 
+  pub status: Option<String>, 
+  #[serde(default)] 
   pub ready: bool , 
-  pub num_target_node:  String, 
-  pub built_at:  String, 
-  pub kubeconfig: String , 
-  pub kubnernetes_version:  String, 
-  pub api_endpoint: String,  
-  pub master_ip: String, 
-  pub dns_entry: String, 
-  pub upgrade_to_available: String, 
-  pub legacy: String, 
-  pub network_id: String, 
-  pub namespace: String, 
-  pub tags: String, 
-  pub created_at: String, 
-  pub instances: Vec<KubernetesInstance>,
-  pub pool: Vec<KubernetesPool>,
+  #[serde(default)] 
+  pub num_target_node:  Option<String>, 
+  #[serde(default)] 
+  pub built_at:  Option<String>, 
+  #[serde(default)] 
+  pub kubeconfig: Option<String> , 
+  #[serde(default)] 
+  pub kubnernetes_version:  Option<String>, 
+  #[serde(default)] 
+  pub api_endpoint: Option<String>,  
+  #[serde(default)] 
+  pub master_ip: Option<String>, 
+  #[serde(default)] 
+  pub dns_entry: Option<String>, 
+  #[serde(default)] 
+  pub upgrade_to_available: Option<String>, 
+  #[serde(default)] 
+  pub legacy: Option<String>, 
+  #[serde(default)] 
+  pub network_id: Option<String>, 
+  #[serde(default)] 
+  pub namespace: Option<String>, 
+  #[serde(default)] 
+  pub tags: Option<String>, 
+  #[serde(default)] 
+  pub created_at: Option<String>, 
+  #[serde(default)] 
+  pub instances: Option<Vec<KubernetesInstance>>,
+  #[serde(default)] 
+  pub pools: Option<Vec<KubernetesPool>>,
+  pub required_pools: Option<Vec<RequiredPools>>,
+  #[serde(default)] 
   pub installed_applications: Vec<KubernetesInstalledApplication>,
-  pub firewall_id: String, 
-  pub cni_plugin: String, 
-  pub ccm_installed: String
+  #[serde(default)] 
+  pub firewall_id: Option<String>, 
+  #[serde(default)] 
+  pub cni_plugin: Option<String>, 
+   #[serde(default)] 
+  pub ccm_installed: Option<String>
 }
 
-#[derive(Deserialize,Serialize)]
+#[derive(Deserialize,Serialize,Debug)]
+pub struct KubernetesCluster  { 
+  pub id: String,
+    pub name: String,
+    pub version: String,
+    pub status: String,
+    pub ready: bool,
+    pub num_target_nodes: u32,
+    pub target_nodes_size: String,
+    pub built_at: String,
+    pub kubernetes_version: String,
+    pub api_endpoint: String,
+    pub dns_entry: String,
+   pub  created_at: String,
+    pub master_ip: String,
+    pub pools: Option<()>,
+    pub required_pools: Vec<RequiredPools>,
+    pub firewall_id: String,
+    pub master_ipv6: String,
+    pub network_id: String,
+    pub namespace: String,
+    pub size: String,
+    pub count: u32,
+    pub kubeconfig: Option<()>,
+    pub instances: Option<()>,
+    pub installed_applications: Option<()>,
+    pub ccm_installed: String,
+}
+
+#[derive(Deserialize,Serialize,Debug)]
 pub struct RequiredPools { 
     pub id: String,
     pub size: String, 
@@ -113,29 +168,56 @@ pub struct PaginatedKubernetesClusters  {
 
 }
 
+pub trait ClusterConfig {
+    fn name(&self) -> &str;
+    fn region(&self) -> &str;
+    fn network_id(&self) -> &str;
+    fn firewall_rule(&self) -> &str;
+    fn pools(&self) -> &Vec<KubernetesPoolConfig>;
+}
+
+
 #[derive(Deserialize,Serialize)] 
 pub struct KubernetesClusterConfig { 
     pub name: String ,
     pub region: String,
+    #[serde(default)]
     pub num_target_nodes: i32, 
+    #[serde(default)]
     pub target_node_size: String ,
+    #[serde(default)]
     pub kubnernetes_version: String, 
+    #[serde(default)]
     pub node_destroy: String, 
     pub network_id: String,
+    #[serde(default)]
     pub tags: String, 
-    pub pool: Vec<KubernetesPoolConfig>,
+    pub pools: Vec<KubernetesPoolConfig>,
+    #[serde(default)]
     pub applications: String, 
+    #[serde(default)]
     pub instance_firewall: String, 
     pub firewall_rule: String, 
+    #[serde(default)]
     pub cni_plugin: String, 
+}
+
+
+#[derive(Deserialize,Serialize)]
+pub struct SimpleClusterConfig {
+    pub name: String, 
+    pub region: String, 
+    pub network_id: String,
+    pub firewall_rule: String, 
+    pub pools: Vec<KubernetesPoolConfig>
 }
 
 
 #[derive(Deserialize,Serialize)] 
 pub struct KubernetesPoolConfig {
-    id: String,
-    count: i32,
-    size: String
+    pub id: String,
+    pub count: i32,
+    pub size: String
 } 
 #[derive(Deserialize,Serialize,Debug)]
 pub struct  KubernetesVersion {
@@ -171,7 +253,7 @@ impl  CivoClient {
 
     pub async fn new_kubernetes_cluster(&self, mut kc: KubernetesClusterConfig) ->  Result<KubernetesCluster,HTTPError> {
         kc.region = self.region.clone();
-        let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/cluster");
+        let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/clusters");
         let resp = self.send_post_request(cluster_enpoint,kc).await;
         match resp {
             Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await.unwrap()),
@@ -180,13 +262,25 @@ impl  CivoClient {
         }      
     }
 
-    // pub fn new_cluster_config(&self) -> Result<&mut KubernetesClusterConfig,GenericError>{
-    //     // let mut cluster_cfg = KubernetesClusterConfig{
-    //     //     name
-    //     // }
-    //     // Ok(todo!())
+    pub async fn new_simple_kubernetes_cluster(&self, mut kc: SimpleClusterConfig) ->  Result<KubernetesCluster,HTTPError> {
+        kc.region = self.region.clone();
+        let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/clusters");
+        let resp = self.send_post_request(cluster_enpoint,kc).await;
+        match resp {
+            Ok(cluster) => return Ok(cluster.json::<KubernetesCluster>().await.unwrap()),
+            Err(error) => return Err(error),
 
-    // }
+        }      
+    }
+
+    pub async fn delete_kubernetes_cluster(&self,cluster_id:&str) -> Result<SimpleResponse,HTTPError> {
+        let cluster_endpoint = self.prepare_client_url("/v2/kubernetes/cluster").join(&cluster_id);
+        let resp = self.send_delete_request(cluster_endpoint.unwrap().as_str()).await;
+        match resp {
+            Ok(simplresp) => Ok(simplresp.json::<SimpleResponse>().await.unwrap()),
+            Err(err) => Err(err),
+        }
+    }
 
     pub async fn get_kubernetes_versions(&self) -> Result<Vec<KubernetesVersion>, Error> {
         let versions_endopoint = self.prepare_client_url("/v2/kubernetes/versions");
