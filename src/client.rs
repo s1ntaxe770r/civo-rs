@@ -1,4 +1,3 @@
-use std::f32::consts::E;
 
 use reqwest::{Client, Error, Response};
 use serde::{Deserialize, Serialize};
