@@ -13,7 +13,7 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 - [x] managing ssh keys
 - [x] creating compute instances 
 - [x] creating kubernetes clusters
-- [ ] managing object stores 
+- [x] managing object stores 
 - [ ] support for civo databases
 
 ## How do i use this thing
