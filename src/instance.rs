@@ -1,11 +1,10 @@
 use crate::client::CivoClient;
 use crate::client::SimpleResponse;
 use crate::errors::GenericError;
-use crate::errors::HTTPError; 
+use crate::errors::HTTPError;
 use crate::network::Subnet;
 use crate::utils;
 use serde::{Deserialize, Serialize};
-use reqwest::Response;
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Instance {
     #[serde(default)]
@@ -121,6 +120,12 @@ pub struct PaginatedInstanceList {
 }
 
 impl CivoClient {
+    /// Creates a new instance configuration
+    ///
+    /// # Returns
+    ///
+    /// Returns a Result containing an `InstanceConfig` on success, or a `GenericError` on failure.
+    /// This method will fail if the call to get the default network or the disk image fails.
     pub async fn new_instance_config(&self) -> Result<InstanceConfig, GenericError> {
         let default_network = match self.get_default_network().await {
             Ok(network) => network,
@@ -146,7 +151,7 @@ impl CivoClient {
             initial_user: "civo".to_string(),
             script: "".to_string(),
             tags: "".to_string(),
-            tag_list: "".to_string()    ,
+            tag_list: "".to_string(),
             firewall_id: "".to_string(),
             subnets: vec!["".to_string()],
             ssh_key_id: None,
@@ -155,6 +160,15 @@ impl CivoClient {
         Ok(instance_config)
     }
 
+    /// Creates a new instance
+    ///
+    /// # Arguments
+    ///
+    /// * `config`: an `InstanceConfig` containing the configuration for the new instance
+    ///
+    /// # Returns
+    ///
+    /// Returns a Result containing an `Instance` on success, or an `HTTPError` on failure.
     pub async fn create_instance(&self, config: InstanceConfig) -> Result<Instance, HTTPError> {
         let instance_endpoint = self.prepare_client_url("/v2/instances");
         let resp = self.send_post_request(instance_endpoint, &config).await;
@@ -164,6 +178,15 @@ impl CivoClient {
         }
     }
 
+    /// Deletes an existing instance 
+    ///
+    /// # Arguments
+    ///
+    /// * `instance_id`: a string slice containing the id of the instance to be deleted
+    ///
+    /// # Returns
+    ///
+    /// Returns a Result containing a `SimpleResponse` on success, or an `HTTPError` on failure.
     pub async fn delete_instance(&self,instance_id:&str) -> Result<SimpleResponse,HTTPError> {
         let instance_endpoint = self.prepare_client_url("/v2/instances/").join(&instance_id);
         let resp = self.send_delete_request(instance_endpoint.unwrap().as_str()).await;
@@ -171,7 +194,5 @@ impl CivoClient {
             Ok(simplresp) => Ok(simplresp.json::<SimpleResponse>().await.unwrap()),
             Err(err) => Err(err),
         }
-      
     }
-        
 }
