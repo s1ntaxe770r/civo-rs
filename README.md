@@ -17,6 +17,21 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 - [ ] support for civo databases
 
 ## How do i use this thing
+
+```toml
+[package]
+name = "epik project"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }  # for our async runtime
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"  
+```
+
 for more advanced use cases checkout the rust docs [here]()
 ```rust 
 use civo_rs::{client::new_civo_client, instance};
@@ -72,6 +87,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+
+If by any chance you find this useful consider leaving a star or buy me a coffee 
+
+<a href="https://www.buymeacoffee.com/s1ntaxe770r" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 
 
 
