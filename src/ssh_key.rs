@@ -2,26 +2,42 @@ use crate::client::CivoClient;
 use crate::errors::HTTPError;
 use reqwest::header::USER_AGENT;
 use serde::{Deserialize, Serialize};
+
+
+/// Represents a SSH key on Civo's platform
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SshKey {
+    /// The unique identifier for the SSH key
     pub id: String,
+    /// The name of the SSH key
     pub name: String,
+    /// The fingerprint of the SSH key
     pub fingerprint: String,
+    /// The public key content
     pub public_key: String,
-    // String for now because i don't know the rust equivalent of time.Time
+    /// The timestamp of the creation of the key
     pub created_at: String,
 }
+
+/// Represents a request to create a new SSH key on Civo's platform
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SshKeyRequest {
+    /// The name of the SSH key
     pub name: String,
+    /// The public key content
     pub public_key: String,
 }
+
+/// Represents the response when creating a new SSH key on Civo's platform
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SshKeyResponse {
+    /// The unique identifier of the created SSH key
     pub id: String,
+    /// The result of the creation request
     pub result: String,
 }
 
+/// Alias for a vector of `SshKey` structs
 type SshKeys = Vec<SshKey>;
 
 impl CivoClient {
