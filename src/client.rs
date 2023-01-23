@@ -4,26 +4,47 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 use crate::errors::HTTPError;
+/// Represents a client for interacting with the Civo Kubernetes API.
 #[derive(Debug)]
 pub struct CivoClient {
+    /// API key for authentication
     pub api_key: String,
+    /// Base URL for the API
     pub base_url: Url,
+    /// HTTP client for making requests
     pub http_client: reqwest::Client,
+    /// Region for the API requests
     pub region: String,
 }
 
+/// Represents a simple response from the Civo API
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SimpleResponse {
+    /// ID of the resource
     pub id: String,
+    /// Result of the operation
     pub result: String,
+    /// Code of the response
     #[serde(default)]
     pub code: String,
+    /// Reason for the response
     #[serde(default)]
     pub reason: String,
+    /// Additional details about the response
     #[serde(default)]
     pub details: String,
 }
 
+/// Creates a new Civo client for interacting with the API
+///
+/// # Parameters
+///
+/// * `apikey`: API key for authentication
+/// * `region`: Region for the API requests
+///
+/// # Returns
+///
+/// A new instance of the Civo client
 pub fn new_civo_client(apikey: String, region: String) -> CivoClient {
     let http_c = Client::new();
     let u = Url::parse("https://api.civo.com/v2").unwrap();
@@ -108,3 +129,4 @@ impl CivoClient {
         }
     }
 }
+
