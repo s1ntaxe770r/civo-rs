@@ -178,7 +178,7 @@ impl CivoClient {
         }
     }
 
-    /// Deletes an existing instance 
+    /// Deletes an existing instance
     ///
     /// # Arguments
     ///
@@ -187,9 +187,11 @@ impl CivoClient {
     /// # Returns
     ///
     /// Returns a Result containing a `SimpleResponse` on success, or an `HTTPError` on failure.
-    pub async fn delete_instance(&self,instance_id:&str) -> Result<SimpleResponse,HTTPError> {
+    pub async fn delete_instance(&self, instance_id: &str) -> Result<SimpleResponse, HTTPError> {
         let instance_endpoint = self.prepare_client_url("/v2/instances/").join(&instance_id);
-        let resp = self.send_delete_request(instance_endpoint.unwrap().as_str()).await;
+        let resp = self
+            .send_delete_request(instance_endpoint.unwrap().as_str())
+            .await;
         match resp {
             Ok(simplresp) => Ok(simplresp.json::<SimpleResponse>().await.unwrap()),
             Err(err) => Err(err),
