@@ -18,7 +18,58 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 
 ## How do i use this thing
 
-😅 yeah still working on that 
+```rust 
+use civo_rs::{client::new_civo_client, instance};
+use civo_rs::kubernetes::{SimpleClusterConfig};
+use civo_rs::utils::random_name;
+
+
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let api_key = String::from("SOME-REALLY-REAL-API-KEY");
+    let region = String::from("LON1");
+    let new_cc = new_civo_client(api_key, region);
+ let skc = SimpleClusterConfig {
+        name: random_name(),
+        region: "LON1".to_string(),
+        network_id: "f89250e9-da9a-401b-blah-blah-blah".to_string(),
+        pools: vec![KubernetesPoolConfig {
+            id: random_name(),
+            count: 1,
+            size: "g4s.kube.medium".to_string(),
+        }],
+        firewall_rule: "443".to_string(),
+    };
+    let cluster = new_cc.new_simple_kubernetes_cluster(skc).await;
+    println!("{:?}", cluster);
+  Ok(())
+}
+```
+
+```rust
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+ let api_key = String::from("SOME-REALLY-REAL-API-KEY");
+ let region = String::from("LON1");
+ let new_cc = new_civo_client(api_key, region);
+ let default_network = new_cc.get_default_network().await.unwrap();
+  match default_network {
+        Ok(network) => println!("Default network: {}", network.Name),
+        Err(error) => println!("Error: {}", error.message),
+    }
+
+    let mut config  =  new_cc.new_instance_config().await.unwrap();
+    config.hostname = "civo-rs".to_string();
+
+    let instance  =  new_cc.create_instance(config).await;
+    match instance {
+        Ok(instance) => println!("{:?}",serde_json::to_string(&instance)),
+        Err(error) => println!("Error: {}",&error),
+    }
+    println!("{}",serde_json::to_string(&config).unwrap());
+    let deleted_instance = new_cc.delete_instance("efd7c5ca-516a-494d-b8ac-8eabbc215fef");
+    println!("{}",deleted_instance.await.unwrap().result);
+    Ok(())
+}
+```
 
 
 
