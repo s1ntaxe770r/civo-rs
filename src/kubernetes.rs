@@ -232,6 +232,17 @@ pub struct  KubernetesVersion {
 
 
 impl  CivoClient {
+     /// Lists all Kubernetes clusters.
+    ///
+    /// # Examples
+    /// ```rust
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let clusters = client.list_kubernetes_clusters().await;
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `PaginatedKubernetesClusters` struct on success, or an `Error` on failure.
     pub  async fn list_kubernetes_clusters(&self) -> Result<PaginatedKubernetesClusters,Error> {
         let cluster_endpoint = self.prepare_client_url("/v2/kubernetes/clusters");
         let resp = self.send_get_request(&cluster_endpoint.as_str()).await;
@@ -240,7 +251,21 @@ impl  CivoClient {
             Err(error) => return Err(error),
         }
     }
-
+     /// Retrieves a single Kubernetes cluster by ID.
+    ///
+    /// # Examples
+    /// ```
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let cluster = client.get_kubernetes_cluster("CLUSTER_ID").await;
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// * `id` - The ID of the cluster to retrieve.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `KubernetesCluster` struct on success, or an `Error` on failure.
     pub async fn get_kubernetes_cluster(&self, id: &str) -> Result<KubernetesCluster, Error> {
         let cluster_plus_id = format!("/v2/kubernetes/cluster/{}", id);
         let cluster_endopoint = self.prepare_client_url(&cluster_plus_id);
@@ -250,7 +275,22 @@ impl  CivoClient {
             Err(error) => return Err(error),
         }
     }
-
+     /// Creates a new Kubernetes cluster with a specified configuration.
+    ///
+    /// # Examples
+    /// ```
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let cluster_config = KubernetesClusterConfig { ... };
+    /// let cluster = client.new_kubernetes_cluster(cluster_config).await;
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// * `kc` - The `KubernetesClusterConfig` struct containing the configuration for the new cluster.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `KubernetesCluster` struct on success, or an `HTTPError` on failure.
     pub async fn new_kubernetes_cluster(&self, mut kc: KubernetesClusterConfig) ->  Result<KubernetesCluster,HTTPError> {
         kc.region = self.region.clone();
         let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/clusters");
@@ -261,7 +301,23 @@ impl  CivoClient {
 
         }      
     }
-
+    /// Creates a new simple Kubernetes cluster with a specified configuration.
+    /// This function provides the bare minimum options to get a cluster running on civo and is sufficient for most use cases.
+    ///
+    /// # Examples
+    /// ```
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let cluster_config = SimpleClusterConfig { ... };
+    /// let cluster = client.new_simple_kubernetes_cluster(cluster_config).await;
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// * `kc` - The `SimpleClusterConfig` struct containing the configuration for the new cluster.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `KubernetesCluster` struct on success, or an `HTTPError` on failure.
     pub async fn new_simple_kubernetes_cluster(&self, mut kc: SimpleClusterConfig) ->  Result<KubernetesCluster,HTTPError> {
         kc.region = self.region.clone();
         let cluster_enpoint = self.prepare_client_url("/v2/kubernetes/clusters");
@@ -272,7 +328,21 @@ impl  CivoClient {
 
         }      
     }
-
+    /// Deletes a Kubernetes cluster by ID.
+    ///
+    /// # Examples
+    /// ```
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let response = client.delete_kubernetes_cluster("CLUSTER_ID").await;
+    /// ```
+    ///
+    /// # Arguments
+    ///
+    /// * `cluster_id` - The ID of the cluster to delete.
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a `SimpleResponse` struct on success, or an `HTTPError` on failure.
     pub async fn delete_kubernetes_cluster(&self,cluster_id:&str) -> Result<SimpleResponse,HTTPError> {
         let cluster_endpoint = self.prepare_client_url("/v2/kubernetes/cluster").join(&cluster_id);
         let resp = self.send_delete_request(cluster_endpoint.unwrap().as_str()).await;
@@ -281,7 +351,17 @@ impl  CivoClient {
             Err(err) => Err(err),
         }
     }
-
+    /// Retrieves a list of available Kubernetes versions.
+    ///
+    /// # Examples
+    /// ```
+    /// let client = new_civo_client("API_KEY", "REGION");
+    /// let versions = client.get_kubernetes_versions().await;
+    /// ```
+    ///
+    /// # Returns
+    ///
+    /// A `Result` containing a vector of `KubernetesVersion` structs on success, or an `Error` on failure.
     pub async fn get_kubernetes_versions(&self) -> Result<Vec<KubernetesVersion>, Error> {
         let versions_endopoint = self.prepare_client_url("/v2/kubernetes/versions");
         let resp = self.send_get_request(versions_endopoint.as_str()).await;
