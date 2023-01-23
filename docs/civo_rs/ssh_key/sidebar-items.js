@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["SshKey","Represents a SSH key on Civo’s platform"],["SshKeyRequest","Represents a request to create a new SSH key on Civo’s platform"],["SshKeyResponse","Represents the response when creating a new SSH key on Civo’s platform"]]};

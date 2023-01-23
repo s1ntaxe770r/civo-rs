@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":[["K8scluster",""],["KubernetesCluster",""],["KubernetesClusterConfig",""],["KubernetesInstalledApplication",""],["KubernetesInstance",""],["KubernetesPool",""],["KubernetesPoolConfig",""],["KubernetesVersion",""],["PaginatedKubernetesClusters",""],["RequiredPools",""],["SimpleClusterConfig",""]],"trait":[["ClusterConfig",""]]};

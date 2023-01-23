@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"civo_rs":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.1/core/error/trait.Error.html\" title=\"trait core::error::Error\">Error</a> for <a class=\"struct\" href=\"civo_rs/errors/struct.GenericError.html\" title=\"struct civo_rs::errors::GenericError\">GenericError</a>"],["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.66.1/core/error/trait.Error.html\" title=\"trait core::error::Error\">Error</a> for <a class=\"struct\" href=\"civo_rs/errors/struct.HTTPError.html\" title=\"struct civo_rs::errors::HTTPError\">HTTPError</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":[["new_civo_client","Creates a new Civo client for interacting with the API"]],"struct":[["CivoClient","Represents a client for interacting with the Civo Kubernetes API."],["SimpleResponse","Represents a simple response from the Civo API"]]};

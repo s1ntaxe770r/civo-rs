@@ -1,0 +1,85 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/utils.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>utils.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../../normalize.css"><link rel="stylesheet" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../../ayu.css" disabled><link rel="stylesheet" href="../../dark.css" disabled><link rel="stylesheet" href="../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../storage.js"></script><script defer src="../../source-script.js"></script><script defer src="../../source-files.js"></script><script defer src="../../main.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><div class="width-limiter"><nav class="sub"><a class="sub-logo-container" href="../../civo_rs/index.html"><img class="rust-logo" src="../../rust-logo.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><pre class="src-line-numbers"><span id="1">1</span>
+<span id="2">2</span>
+<span id="3">3</span>
+<span id="4">4</span>
+<span id="5">5</span>
+<span id="6">6</span>
+<span id="7">7</span>
+<span id="8">8</span>
+<span id="9">9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+</pre><pre class="rust"><code><span class="kw">use </span>rand::seq::SliceRandom;
+<span class="kw">use </span>rand::thread_rng;
+
+<span class="kw">pub fn </span>random_name() -&gt; String {
+    <span class="kw">let </span>adjectives = <span class="macro">vec!</span>[
+        <span class="string">&quot;aged&quot;</span>, <span class="string">&quot;ancient&quot;</span>, <span class="string">&quot;autumn&quot;</span>, <span class="string">&quot;billowing&quot;</span>, <span class="string">&quot;bitter&quot;</span>, <span class="string">&quot;black&quot;</span>, <span class="string">&quot;blue&quot;</span>, <span class="string">&quot;bold&quot;</span>,
+	<span class="string">&quot;broad&quot;</span>, <span class="string">&quot;broken&quot;</span>, <span class="string">&quot;calm&quot;</span>, <span class="string">&quot;cold&quot;</span>, <span class="string">&quot;cool&quot;</span>, <span class="string">&quot;crimson&quot;</span>, <span class="string">&quot;curly&quot;</span>, <span class="string">&quot;damp&quot;</span>,
+	<span class="string">&quot;dark&quot;</span>, <span class="string">&quot;dawn&quot;</span>, <span class="string">&quot;delicate&quot;</span>, <span class="string">&quot;divine&quot;</span>, <span class="string">&quot;dry&quot;</span>, <span class="string">&quot;empty&quot;</span>, <span class="string">&quot;falling&quot;</span>, <span class="string">&quot;fancy&quot;</span>,
+	<span class="string">&quot;flat&quot;</span>, <span class="string">&quot;floral&quot;</span>, <span class="string">&quot;fragrant&quot;</span>, <span class="string">&quot;frosty&quot;</span>, <span class="string">&quot;gentle&quot;</span>, <span class="string">&quot;green&quot;</span>, <span class="string">&quot;hidden&quot;</span>, <span class="string">&quot;holy&quot;</span>,
+	<span class="string">&quot;icy&quot;</span>, <span class="string">&quot;jolly&quot;</span>, <span class="string">&quot;late&quot;</span>, <span class="string">&quot;lingering&quot;</span>, <span class="string">&quot;little&quot;</span>, <span class="string">&quot;lively&quot;</span>, <span class="string">&quot;long&quot;</span>, <span class="string">&quot;lucky&quot;</span>,
+	<span class="string">&quot;misty&quot;</span>, <span class="string">&quot;morning&quot;</span>, <span class="string">&quot;muddy&quot;</span>, <span class="string">&quot;mute&quot;</span>, <span class="string">&quot;nameless&quot;</span>, <span class="string">&quot;noisy&quot;</span>, <span class="string">&quot;odd&quot;</span>, <span class="string">&quot;old&quot;</span>,
+	<span class="string">&quot;orange&quot;</span>, <span class="string">&quot;patient&quot;</span>, <span class="string">&quot;plain&quot;</span>, <span class="string">&quot;polished&quot;</span>, <span class="string">&quot;proud&quot;</span>, <span class="string">&quot;purple&quot;</span>, <span class="string">&quot;quiet&quot;</span>, <span class="string">&quot;rapid&quot;</span>,
+	<span class="string">&quot;raspy&quot;</span>, <span class="string">&quot;red&quot;</span>, <span class="string">&quot;restless&quot;</span>, <span class="string">&quot;rough&quot;</span>, <span class="string">&quot;round&quot;</span>, <span class="string">&quot;royal&quot;</span>, <span class="string">&quot;shiny&quot;</span>, <span class="string">&quot;shrill&quot;</span>,
+	<span class="string">&quot;shy&quot;</span>, <span class="string">&quot;silent&quot;</span>, <span class="string">&quot;small&quot;</span>, <span class="string">&quot;snowy&quot;</span>, <span class="string">&quot;soft&quot;</span>, <span class="string">&quot;solitary&quot;</span>, <span class="string">&quot;sparkling&quot;</span>, <span class="string">&quot;spring&quot;</span>,
+	<span class="string">&quot;square&quot;</span>, <span class="string">&quot;steep&quot;</span>, <span class="string">&quot;still&quot;</span>, <span class="string">&quot;summer&quot;</span>, <span class="string">&quot;super&quot;</span>, <span class="string">&quot;sweet&quot;</span>, <span class="string">&quot;throbbing&quot;</span>, <span class="string">&quot;tight&quot;</span>,
+	<span class="string">&quot;tiny&quot;</span>, <span class="string">&quot;twilight&quot;</span>, <span class="string">&quot;wandering&quot;</span>, <span class="string">&quot;weathered&quot;</span>, <span class="string">&quot;white&quot;</span>, <span class="string">&quot;wild&quot;</span>, <span class="string">&quot;winter&quot;</span>, <span class="string">&quot;wispy&quot;</span>,
+	<span class="string">&quot;withered&quot;</span>, <span class="string">&quot;yellow&quot;</span>, <span class="string">&quot;young&quot;</span>,
+    ];
+
+    <span class="kw">let </span>nouns = <span class="macro">vec!</span>[
+        <span class="string">&quot;waterfall&quot;</span>, <span class="string">&quot;river&quot;</span>, <span class="string">&quot;breeze&quot;</span>, <span class="string">&quot;moon&quot;</span>, <span class="string">&quot;rain&quot;</span>, <span class="string">&quot;wind&quot;</span>, <span class="string">&quot;sea&quot;</span>, <span class="string">&quot;morning&quot;</span>,
+	<span class="string">&quot;snow&quot;</span>, <span class="string">&quot;lake&quot;</span>, <span class="string">&quot;sunset&quot;</span>, <span class="string">&quot;pine&quot;</span>, <span class="string">&quot;shadow&quot;</span>, <span class="string">&quot;leaf&quot;</span>, <span class="string">&quot;dawn&quot;</span>, <span class="string">&quot;glitter&quot;</span>,
+	<span class="string">&quot;forest&quot;</span>, <span class="string">&quot;hill&quot;</span>, <span class="string">&quot;cloud&quot;</span>, <span class="string">&quot;meadow&quot;</span>, <span class="string">&quot;sun&quot;</span>, <span class="string">&quot;glade&quot;</span>, <span class="string">&quot;bird&quot;</span>, <span class="string">&quot;brook&quot;</span>,
+	<span class="string">&quot;butterfly&quot;</span>, <span class="string">&quot;bush&quot;</span>, <span class="string">&quot;dew&quot;</span>, <span class="string">&quot;dust&quot;</span>, <span class="string">&quot;field&quot;</span>, <span class="string">&quot;fire&quot;</span>, <span class="string">&quot;flower&quot;</span>, <span class="string">&quot;firefly&quot;</span>,
+	<span class="string">&quot;feather&quot;</span>, <span class="string">&quot;grass&quot;</span>, <span class="string">&quot;haze&quot;</span>, <span class="string">&quot;mountain&quot;</span>, <span class="string">&quot;night&quot;</span>, <span class="string">&quot;pond&quot;</span>, <span class="string">&quot;darkness&quot;</span>,
+	<span class="string">&quot;snowflake&quot;</span>, <span class="string">&quot;silence&quot;</span>, <span class="string">&quot;sound&quot;</span>, <span class="string">&quot;sky&quot;</span>, <span class="string">&quot;shape&quot;</span>, <span class="string">&quot;surf&quot;</span>, <span class="string">&quot;thunder&quot;</span>,
+	<span class="string">&quot;violet&quot;</span>, <span class="string">&quot;water&quot;</span>, <span class="string">&quot;wildflower&quot;</span>, <span class="string">&quot;wave&quot;</span>, <span class="string">&quot;water&quot;</span>, <span class="string">&quot;resonance&quot;</span>, <span class="string">&quot;sun&quot;</span>,
+	<span class="string">&quot;wood&quot;</span>, <span class="string">&quot;dream&quot;</span>, <span class="string">&quot;cherry&quot;</span>, <span class="string">&quot;tree&quot;</span>, <span class="string">&quot;fog&quot;</span>, <span class="string">&quot;frost&quot;</span>, <span class="string">&quot;voice&quot;</span>,
+	<span class="string">&quot;frog&quot;</span>, <span class="string">&quot;smoke&quot;</span>, <span class="string">&quot;star&quot;</span>, <span class="string">&quot;ibex&quot;</span>, <span class="string">&quot;roe&quot;</span>, <span class="string">&quot;deer&quot;</span>, <span class="string">&quot;cave&quot;</span>, <span class="string">&quot;stream&quot;</span>, <span class="string">&quot;creek&quot;</span>, <span class="string">&quot;ditch&quot;</span>, <span class="string">&quot;puddle&quot;</span>,
+	<span class="string">&quot;oak&quot;</span>, <span class="string">&quot;fox&quot;</span>, <span class="string">&quot;wolf&quot;</span>, <span class="string">&quot;owl&quot;</span>, <span class="string">&quot;eagle&quot;</span>, <span class="string">&quot;hawk&quot;</span>, <span class="string">&quot;badger&quot;</span>, <span class="string">&quot;nightingale&quot;</span>,
+	<span class="string">&quot;ocean&quot;</span>, <span class="string">&quot;island&quot;</span>, <span class="string">&quot;marsh&quot;</span>, <span class="string">&quot;swamp&quot;</span>, <span class="string">&quot;blaze&quot;</span>, <span class="string">&quot;glow&quot;</span>, <span class="string">&quot;hail&quot;</span>, <span class="string">&quot;echo&quot;</span>,
+	<span class="string">&quot;flame&quot;</span>, <span class="string">&quot;twilight&quot;</span>, <span class="string">&quot;whale&quot;</span>, <span class="string">&quot;raven&quot;</span>, <span class="string">&quot;blossom&quot;</span>, <span class="string">&quot;mist&quot;</span>, <span class="string">&quot;ray&quot;</span>, <span class="string">&quot;beam&quot;</span>,
+	<span class="string">&quot;stone&quot;</span>, <span class="string">&quot;rock&quot;</span>, <span class="string">&quot;cliff&quot;</span>, <span class="string">&quot;reef&quot;</span>, <span class="string">&quot;crag&quot;</span>, <span class="string">&quot;peak&quot;</span>, <span class="string">&quot;summit&quot;</span>, <span class="string">&quot;wetland&quot;</span>,
+	<span class="string">&quot;glacier&quot;</span>, <span class="string">&quot;thunderstorm&quot;</span>, <span class="string">&quot;ice&quot;</span>, <span class="string">&quot;firn&quot;</span>, <span class="string">&quot;spark&quot;</span>, <span class="string">&quot;boulder&quot;</span>, <span class="string">&quot;rabbit&quot;</span>,
+	<span class="string">&quot;abyss&quot;</span>, <span class="string">&quot;avalanche&quot;</span>, <span class="string">&quot;moor&quot;</span>, <span class="string">&quot;reed&quot;</span>, <span class="string">&quot;harbor&quot;</span>, <span class="string">&quot;chamber&quot;</span>, <span class="string">&quot;savannah&quot;</span>,
+	<span class="string">&quot;garden&quot;</span>, <span class="string">&quot;brook&quot;</span>, <span class="string">&quot;earth&quot;</span>, <span class="string">&quot;oasis&quot;</span>, <span class="string">&quot;bastion&quot;</span>, <span class="string">&quot;ridge&quot;</span>, <span class="string">&quot;bayou&quot;</span>, <span class="string">&quot;citadel&quot;</span>,
+	<span class="string">&quot;shore&quot;</span>, <span class="string">&quot;cavern&quot;</span>, <span class="string">&quot;gorge&quot;</span>, <span class="string">&quot;spring&quot;</span>, <span class="string">&quot;arrow&quot;</span>, <span class="string">&quot;heap&quot;</span>,
+    ];
+	<span class="kw">let </span><span class="kw-2">mut  </span>seed = thread_rng();
+	<span class="kw">let </span>str =  <span class="macro">format!</span>(<span class="string">&quot;{}-{}&quot;</span>,adjectives.choose(<span class="kw-2">&amp;mut </span>seed).unwrap(),nouns.choose(<span class="kw-2">&amp;mut </span>seed).unwrap()).to_string();
+	str
+} </code></pre></div>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../" data-current-crate="civo_rs" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.66.1 (90743e729 2023-01-10)" ></div></body></html>
