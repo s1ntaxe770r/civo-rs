@@ -32,7 +32,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"  
 ```
 
-for more advanced use cases checkout the rust docs [here]()
+for more advanced use cases checkout the rust docs [here](https://docs.rs/civo-rs/0.1.0/civo_rs/)
 ```rust 
 use civo_rs::{client::new_civo_client, instance};
 use civo_rs::kubernetes::{SimpleClusterConfig};
