@@ -88,8 +88,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-If by any chance you find this useful consider leaving a star or buy me a coffee 
-
 
 
 
