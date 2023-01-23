@@ -42,7 +42,7 @@ pub struct Subnet {
 }
 
 impl  CivoClient {
-    // get_default_network finds the default private network for an account 
+    /// get_default_network finds the default private network for an account 
     pub async fn get_default_network(&self) -> Result<Network,GenericError> {
         let network_endpoint = self.prepare_client_url("v2/networks");
         let req = self
