@@ -19,16 +19,10 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 ## How do i use this thing
 
 ```toml
-[package]
-name = "epik project"
-version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 tokio = { version = "1", features = ["full"] }  # for our async runtime
 serde = { version = "1.0", features = ["derive"] }
+civo-rs = "0.1.0"
 serde_json = "1.0"  
 ```
 
