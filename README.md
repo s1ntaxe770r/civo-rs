@@ -17,7 +17,7 @@ Right now there aren't many i would like to mimic as much civo's go client as po
 - [ ] support for civo databases
 
 ## How do i use this thing
-
+for more advanced use cases checkout the rust docs [here]()
 ```rust 
 use civo_rs::{client::new_civo_client, instance};
 use civo_rs::kubernetes::{SimpleClusterConfig};
@@ -46,6 +46,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ```
 
 ```rust
+use civo_rs::{client::new_civo_client,};
+
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
  let api_key = String::from("SOME-REALLY-REAL-API-KEY");
  let region = String::from("LON1");
